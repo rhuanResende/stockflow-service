@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-table-user-role
+      author: rhuan.resende
+      changes:
+        - createTable:
+            schemaName: auth
+            tableName: tb_user_role
+            columns:
+              - column:
+                  name: co_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: co_user
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: co_role
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+              - column:
+                  name: dt_updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: st_deleted
+                  type: BOOLEAN

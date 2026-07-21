@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-table-user
+      author: rhuan.resende
+      changes:
+        - createTable:
+            schemaName: users
+            tableName: tb_users
+            columns:
+              - column:
+                  name: co_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: co_tenant
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_document
+                  type: VARCHAR(11)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_email
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_phone
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: st_first_access
+                  type: BOOLEAN
+              - column:
+                  name: dt_password_changed_at
+                  type: TIMESTAMP
+              - column:
+                  name: dt_password_expires_at
+                  type: TIMESTAMP
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+              - column:
+                  name: dt_updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: st_deleted
+                  type: BOOLEAN
