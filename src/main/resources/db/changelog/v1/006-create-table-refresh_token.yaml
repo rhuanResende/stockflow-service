@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-table-refresh_token
+      author: rhuan.resende
+      changes:
+        - createTable:
+            schemaName: auth
+            tableName: tb_refresh_token
+            columns:
+              - column:
+                  name: co_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: co_user
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ds_token
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dt_expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: st_revoked
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

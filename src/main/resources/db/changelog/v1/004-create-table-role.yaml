@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-table-role
+      author: rhuan.resende
+      changes:
+        - createTable:
+            schemaName: auth
+            tableName: tb_role
+            columns:
+              - column:
+                  name: co_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: ds_name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
