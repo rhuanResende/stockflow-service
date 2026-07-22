@@ -19,4 +19,10 @@ public class Company extends BaseEntity {
     @Column(name = "nr_document", nullable = false, length = 14)
     private String document;
 
+    @Column(name = "ds_email", nullable = false, length = 200)
+    private String email;
+
+    @Column(name = "ds_phone", nullable = false, length = 20)
+    private String phone;
+
 }

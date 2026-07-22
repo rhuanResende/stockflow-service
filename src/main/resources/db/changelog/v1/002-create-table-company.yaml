@@ -30,16 +30,21 @@ databaseChangeLog:
                     checkConstraint: "length(nr_document) = 14"
 
               - column:
-                  name: st_active
-                  type: BOOLEAN
-                  defaultValueBoolean: true
+                  name: ds_email
+                  type: VARCHAR(200)
                   constraints:
                     nullable: false
 
               - column:
-                  name: st_deleted
+                  name: ds_phone
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: st_active
                   type: BOOLEAN
-                  defaultValueBoolean: false
+                  defaultValueBoolean: true
                   constraints:
                     nullable: false
 
@@ -52,10 +57,6 @@ databaseChangeLog:
 
               - column:
                   name: dt_updated_at
-                  type: TIMESTAMP
-
-              - column:
-                  name: dt_deleted_at
                   type: TIMESTAMP
 
         - createIndex:

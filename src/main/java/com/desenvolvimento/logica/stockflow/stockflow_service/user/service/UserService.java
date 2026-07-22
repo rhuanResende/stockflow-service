@@ -49,7 +49,7 @@ public class UserService {
             );
         }
 
-        CompanyResponse companyResponse = companyService.findById(user.getCompany().toString());
+        CompanyResponse companyResponse = companyService.findCompanyById(user.getCompany());
 
         return userMapper.toDTO(user, companyResponse);
     }
@@ -64,7 +64,7 @@ public class UserService {
             );
         }
 
-        CompanyResponse companyResponse = companyService.findById(user.getCompany().toString());
+        CompanyResponse companyResponse = companyService.findCompanyById(user.getCompany());
 
         return userMapper.toDTO(user, companyResponse);
     }
@@ -79,7 +79,7 @@ public class UserService {
             );
         }
 
-        CompanyResponse companyResponse = companyService.findById(user.getCompany().toString());
+        CompanyResponse companyResponse = companyService.findCompanyById(user.getCompany());
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         user.setFirstAccess(false);
