@@ -12,5 +12,6 @@
     <include file="db/changelog/v1/004-create-table-role.yaml"/>
     <include file="db/changelog/v1/005-create-table-user-role.yaml"/>
     <include file="db/changelog/v1/006-create-table-refresh_token.yaml"/>
+    <include file="db/changelog/v1/007-create-table-password-reset-token.yaml"/>
 
 </databaseChangeLog>

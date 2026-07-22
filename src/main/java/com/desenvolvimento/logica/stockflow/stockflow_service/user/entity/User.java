@@ -13,16 +13,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_users", schema = "users")
+@Table(name = "tb_user", schema = "users")
 public class User extends BaseEntity {
 
-    @Column(name = "co_tenant", nullable = false)
-    private UUID tenant;
+    @Column(name = "co_company", nullable = false)
+    private UUID company;
 
     @Column(name = "ds_name", nullable = false, length = 200)
     private String name;
 
-    @Column(name = "ds_document", nullable = false, unique = true, length = 11)
+    @Column(name = "nr_document", nullable = false, length = 11)
     private String document;
 
     @Column(name = "ds_email", nullable = false, length = 200)
@@ -34,8 +34,20 @@ public class User extends BaseEntity {
     @Column(name = "ds_password", nullable = false)
     private String password;
 
+    @Column(name = "st_active", nullable = false)
+    private boolean active;
+
     @Column(name = "st_first_access", nullable = false)
     private Boolean firstAccess;
+
+    @Column(name = "st_force_password_change", nullable = false)
+    private boolean forcePasswordChange;
+
+    @Column(name = "nr_failed_login_attempts", nullable = false)
+    private Integer failedLoginAttempts;
+
+    @Column(name = "dt_locked_until")
+    private LocalDateTime lockedUntil;
 
     @Column(name = "dt_password_changed_at")
     private LocalDateTime passwordChangedAt;

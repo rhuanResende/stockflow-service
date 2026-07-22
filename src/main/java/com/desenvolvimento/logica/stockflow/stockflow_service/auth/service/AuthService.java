@@ -10,14 +10,12 @@ import com.desenvolvimento.logica.stockflow.stockflow_common.service.MessageServ
 import com.desenvolvimento.logica.stockflow.stockflow_security.holder.TenantContextHolder;
 import com.desenvolvimento.logica.stockflow.stockflow_security.model.AuthenticatedUser;
 import com.desenvolvimento.logica.stockflow.stockflow_security.service.JwtService;
-import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.LoginRequest;
-import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.LoginResponse;
-import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.RefreshTokenRequest;
-import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.UserDataResponse;
+import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.*;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.entity.RefreshToken;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.entity.UserRole;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.mapper.RefreshTokenMapper;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.RefreshTokenRepository;
+import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.RoleRepository;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.UserRoleRepository;
 import com.desenvolvimento.logica.stockflow.stockflow_service.company.service.CompanyService;
 import com.desenvolvimento.logica.stockflow.stockflow_service.user.service.UserService;
@@ -33,6 +31,7 @@ public class AuthService {
 
     private final UserRoleRepository userRoleRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RoleRepository roleRepository;
     private final UserService userService;
     private final CompanyService companyService;
     private final MessageService messageService;
@@ -43,6 +42,7 @@ public class AuthService {
     public AuthService(
             UserRoleRepository userRoleRepository,
             RefreshTokenRepository refreshTokenRepository,
+            RoleRepository roleRepository,
             UserService userService,
             CompanyService companyService,
             MessageService messageService,
@@ -52,6 +52,7 @@ public class AuthService {
     ) {
         this.userRoleRepository = userRoleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.roleRepository = roleRepository;
         this.userService = userService;
         this.companyService = companyService;
         this.messageService = messageService;
@@ -83,7 +84,8 @@ public class AuthService {
         return new LoginResponse(
                 token,
                 refreshTokenValue,
-                jwtService.getExpiration()
+                jwtService.getExpiration(),
+                user.firstAccess()
         );
     }
 
@@ -119,7 +121,8 @@ public class AuthService {
         return new LoginResponse(
                 token,
                 refreshTokenValue,
-                jwtService.getExpiration()
+                jwtService.getExpiration(),
+                user.firstAccess()
         );
     }
 
@@ -150,11 +153,72 @@ public class AuthService {
         refreshTokenRepository.save(refreshToken);
     }
 
+    public void changePassword(NewPasswordRequest request) {
+
+        UUID userId = TenantContextHolder.getUserId();
+
+        UserResponse userResponse = userService.findUserById(userId);
+
+        if (!passwordEncoder.matches(request.currentPassword(), userResponse.password())) {
+            throw new UnauthorizedException(
+                    messageService.get(MessageCode.ERROR_PASSWORD_INCORRECT.getCode())
+            );
+        }
+
+        validatePassword(request.newPassword(), request.confirmPassword());
+
+        userService.updatePassword(userId, request);
+    }
+
+    public void forgotPassword() {
+
+        UserResponse userResponse = userService.findUserById(TenantContextHolder.getTenantId());
+
+        //TODO enviar email
+
+    }
+
+    private void validatePassword(String password, String confirmPassword) {
+
+        if (password == null || password.isBlank()) {
+            throw new BusinessException("Senha é obrigatória");
+        }
+
+        if (confirmPassword == null || confirmPassword.isBlank()) {
+            throw new BusinessException("Confirmação da senha é obrigatória");
+        }
+
+        if (!password.equals(confirmPassword)) {
+            throw new BusinessException("Senhas divergentes");
+        }
+
+        if (password.length() < 8) {
+            throw new BusinessException("Senha deve ter no minimo 8 caracteres");
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            throw new BusinessException("A senha deve possuir ao menos uma letra maiúscula");
+        }
+
+        if (!password.matches(".*[a-z].*")) {
+            throw new BusinessException("A senha deve possuir ao menos uma letra minúscula");
+        }
+
+        if (!password.matches(".*\\d.*")) {
+            throw new BusinessException("A senha deve possuir ao menos um número");
+        }
+
+        if (!password.matches(".*[@$!%*?&].*")) {
+            throw new BusinessException("A senha deve possuir ao menos um caractere especial");
+        }
+
+    }
+
     private List<String> getRolesUser(String userId) {
         List<UserRole> userRoles = userRoleRepository.findUserRoleByUser(UUID.fromString(userId));
         return userRoles.stream()
                 .filter(userRole -> Boolean.FALSE.equals(userRole.getDeleted()))
-                .map(userRole -> userRole.getRole().getName())
+                .map(userRole -> roleRepository.findRoleById(userRole.getRole()).getName())
                 .toList();
     }
 
