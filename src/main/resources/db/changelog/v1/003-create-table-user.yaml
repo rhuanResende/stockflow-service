@@ -93,13 +93,6 @@ databaseChangeLog:
                   type: TIMESTAMP
 
               - column:
-                  name: st_deleted
-                  type: BOOLEAN
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: false
-
-              - column:
                   name: dt_created_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
@@ -108,10 +101,6 @@ databaseChangeLog:
 
               - column:
                   name: dt_updated_at
-                  type: TIMESTAMP
-
-              - column:
-                  name: dt_deleted_at
                   type: TIMESTAMP
 
         - createIndex:

@@ -217,12 +217,8 @@ public class AuthService {
     private List<String> getRolesUser(String userId) {
         List<UserRole> userRoles = userRoleRepository.findUserRoleByUser(UUID.fromString(userId));
         return userRoles.stream()
-                .filter(userRole -> Boolean.FALSE.equals(userRole.getDeleted()))
+                .filter(userRole -> Boolean.TRUE.equals(userRole.getActive()))
                 .map(userRole -> roleRepository.findRoleById(userRole.getRole()).getName())
                 .toList();
-    }
-
-    private CompanyResponse getCompany(String tenant) {
-        return companyService.findById(tenant);
     }
 }
