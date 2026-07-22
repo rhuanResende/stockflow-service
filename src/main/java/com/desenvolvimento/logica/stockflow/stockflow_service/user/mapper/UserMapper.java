@@ -16,6 +16,7 @@ public class UserMapper {
                 user.getEmail(),
                 user.getPhone(),
                 user.getPassword(),
+                user.getFirstAccess(),
                 company
         );
     }

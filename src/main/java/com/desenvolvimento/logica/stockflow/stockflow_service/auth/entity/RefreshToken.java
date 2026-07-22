@@ -16,13 +16,13 @@ public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "co_id")
+    @Column(name = "co_id", columnDefinition = "uuid", nullable = false)
     private UUID id;
 
-    @Column(name = "co_user", columnDefinition = "uuid")
+    @Column(name = "co_user", columnDefinition = "uuid", nullable = false)
     private UUID user;
 
-    @Column(name = "ds_token", nullable = false, length = 500)
+    @Column(name = "ds_token_hash", nullable = false, length = 500)
     private String token;
 
     @Column(name = "dt_expires_at", nullable = false)
@@ -30,6 +30,15 @@ public class RefreshToken {
 
     @Column(name = "st_revoked", nullable = false)
     private boolean revoked;
+
+    @Column(name = "dt_revoked_at", nullable = false)
+    private LocalDateTime revokedAt;
+
+    @Column(name = "ds_device", length = 200)
+    private String device;
+
+    @Column(name = "ds_ip_address", length = 50)
+    private String ipAddress;
 
     @Column(name = "dt_created_at", nullable = false)
     private LocalDateTime createdAt;

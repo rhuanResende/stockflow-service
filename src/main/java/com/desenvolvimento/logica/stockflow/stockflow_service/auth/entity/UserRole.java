@@ -1,8 +1,9 @@
 package com.desenvolvimento.logica.stockflow.stockflow_service.auth.entity;
 
 import com.desenvolvimento.logica.stockflow.stockflow_common.entity.BaseEntity;
-import com.desenvolvimento.logica.stockflow.stockflow_service.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,11 +15,10 @@ import java.util.UUID;
 @Table(name = "tb_user_role", schema = "auth")
 public class UserRole extends BaseEntity {
 
-    @Column(name = "co_user", columnDefinition = "uuid")
+    @Column(name = "co_user", columnDefinition = "uuid", nullable = false)
     private UUID user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "co_role")
-    private Role role;
+    @Column(name = "co_role", columnDefinition = "uuid", nullable = false)
+    private UUID role;
 
 }

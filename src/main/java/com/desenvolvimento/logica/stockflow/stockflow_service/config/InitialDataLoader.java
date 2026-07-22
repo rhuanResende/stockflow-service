@@ -45,7 +45,6 @@ public class InitialDataLoader implements CommandLineRunner {
         Company company = new Company();
         company.setName("LOGICA DESENVOLVIMENTO");
         company.setDocument("43448681000168");
-        company.setDeleted(false);
         return companyRepository.save(company);
     }
 
@@ -56,7 +55,7 @@ public class InitialDataLoader implements CommandLineRunner {
         saveRole("MASTER");
         saveRole("ADMIN");
         saveRole("MANAGER");
-        saveRole("OPERATOR");
+        saveRole("USER");
         return roleRepository.findRoleByName("MASTER");
     }
 
@@ -71,12 +70,14 @@ public class InitialDataLoader implements CommandLineRunner {
             return userRepository.findAll().getFirst();
         }
         User user = new User();
-        user.setTenant(company.getId());
+        user.setCompany(company.getId());
         user.setName("RHUAN SILVA RESENDE");
         user.setDocument("03412808105");
         user.setEmail("rhuan.resende@hotmail.com.br");
         user.setPhone("62996487512");
         user.setPassword(passwordEncoder.encode("Abc@123"));
+        user.setFailedLoginAttempts(0);
+        user.setActive(true);
         user.setFirstAccess(true);
         user.setDeleted(false);
         return userRepository.save(user);
@@ -88,7 +89,7 @@ public class InitialDataLoader implements CommandLineRunner {
         }
         UserRole userRole = new UserRole();
         userRole.setUser(user.getId());
-        userRole.setRole(role);
+        userRole.setRole(role.getId());
         userRoleRepository.save(userRole);
     }
 }
