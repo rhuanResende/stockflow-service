@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-table-company
+      author: rhuan.resende
+      changes:
+        - createTable:
+            schemaName: company
+            tableName: tb_company
+            columns:
+              - column:
+                  name: co_id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: ds_name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: nr_document
+                  type: VARCHAR(14)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    checkConstraint: "length(nr_document) = 14"
+
+              - column:
+                  name: st_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: st_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: dt_created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: dt_updated_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: dt_deleted_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            schemaName: company
+            tableName: tb_company
+            indexName: idx_company_document
+            unique: true
+            columns:
+              - column:
+                  name: nr_document
