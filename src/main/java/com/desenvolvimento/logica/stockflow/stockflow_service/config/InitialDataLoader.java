@@ -45,6 +45,8 @@ public class InitialDataLoader implements CommandLineRunner {
         Company company = new Company();
         company.setName("LOGICA DESENVOLVIMENTO");
         company.setDocument("43448681000168");
+        company.setEmail("rhuan.resende@hotmail.com.br");
+        company.setPhone("62996487512");
         return companyRepository.save(company);
     }
 
@@ -79,7 +81,6 @@ public class InitialDataLoader implements CommandLineRunner {
         user.setFailedLoginAttempts(0);
         user.setActive(true);
         user.setFirstAccess(true);
-        user.setDeleted(false);
         return userRepository.save(user);
     }
 
