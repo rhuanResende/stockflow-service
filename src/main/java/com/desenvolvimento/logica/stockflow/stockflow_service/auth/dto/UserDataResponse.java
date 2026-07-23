@@ -11,6 +11,6 @@ public record UserDataResponse(
         String email,
         String phone,
         CompanyResponse company,
-        List<String> roles
+        String profile
 ) {
 }

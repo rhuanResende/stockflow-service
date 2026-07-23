@@ -33,7 +33,6 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    @PreAuthorize("hasAnyAuthority('MASTER','ADMIN', 'MANAGER', 'OPERATOR')")
     public ApiResponse<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         return new ApiResponse<>(
                 true,
@@ -54,8 +53,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     @PreAuthorize("hasAnyAuthority('MASTER','ADMIN', 'MANAGER', 'OPERATOR')")
-    public void logout(@Valid @RequestBody RefreshTokenRequest request) {
+    public ApiResponse<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
         authService.logout(request);
+        return new ApiResponse<>(
+                true,
+                messageService.get(MessageCode.MESSAGE_SUCCESS_QUERY.getCode())
+        );
     }
 
     @PostMapping("/change-initial-password")

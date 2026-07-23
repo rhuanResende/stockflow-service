@@ -75,7 +75,7 @@ public class AuthService {
                 UUID.fromString(user.id()),
                 UUID.fromString(user.company().id()),
                 user.document(),
-                getRolesUser(user.id())
+                getRoleUser(user.id())
         ));
 
         String refreshTokenValue = jwtService.generateRefreshToken();
@@ -109,7 +109,7 @@ public class AuthService {
                 UUID.fromString(user.id()),
                 UUID.fromString(user.company().id()),
                 user.document(),
-                getRolesUser(user.id())
+                getRoleUser(user.id())
         ));
 
         refreshToken.setRevoked(true);
@@ -140,7 +140,7 @@ public class AuthService {
                 user.email(),
                 user.phone(),
                 user.company(),
-                getRolesUser(user.id())
+                getRoleUser(user.id())
         );
     }
 
@@ -214,11 +214,8 @@ public class AuthService {
 
     }
 
-    private List<String> getRolesUser(String userId) {
-        List<UserRole> userRoles = userRoleRepository.findUserRoleByUser(UUID.fromString(userId));
-        return userRoles.stream()
-                .filter(userRole -> Boolean.TRUE.equals(userRole.getActive()))
-                .map(userRole -> roleRepository.findRoleById(userRole.getRole()).getName())
-                .toList();
+    private String getRoleUser(String userId) {
+        UserRole userRole = userRoleRepository.findUserRoleByUserAndActiveTrue(UUID.fromString(userId));
+        return roleRepository.findRoleById(userRole.getRole()).getName();
     }
 }

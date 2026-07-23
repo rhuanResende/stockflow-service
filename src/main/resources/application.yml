@@ -25,4 +25,4 @@ app:
 security:
   jwt:
     secret: ${JWT_SECRET:0oew4dibIlhwVDaTJ0AAIPwV9DJ7BGRRNJ4vVOPtcYM}
-    expiration: ${JWT_EXPIRATION:1800000}
+    expiration: ${JWT_EXPIRATION:300000}
