@@ -1,6 +1,5 @@
 package com.desenvolvimento.logica.stockflow.stockflow_service.auth.service;
 
-import com.desenvolvimento.logica.stockflow.stockflow_common.dto.CompanyResponse;
 import com.desenvolvimento.logica.stockflow.stockflow_common.dto.UserDataResponse;
 import com.desenvolvimento.logica.stockflow.stockflow_common.dto.UserResponse;
 import com.desenvolvimento.logica.stockflow.stockflow_common.entity.BaseEntity;
@@ -36,12 +35,12 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RoleRepository roleRepository;
     private final UserService userService;
-    private final CompanyService companyService;
     private final MessageService messageService;
     private final RefreshTokenMapper refreshTokenMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RoleMapper roleMapper;
+    private final RoleService roleService;
 
     public AuthService(
             UserRoleRepository userRoleRepository,
@@ -53,17 +52,17 @@ public class AuthService {
             RefreshTokenMapper refreshTokenMapper,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
-            RoleMapper roleMapper) {
+            RoleMapper roleMapper, RoleService roleService) {
         this.userRoleRepository = userRoleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.roleRepository = roleRepository;
         this.userService = userService;
-        this.companyService = companyService;
         this.messageService = messageService;
         this.refreshTokenMapper = refreshTokenMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.roleMapper = roleMapper;
+        this.roleService = roleService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -80,7 +79,7 @@ public class AuthService {
                 UUID.fromString(user.id()),
                 UUID.fromString(user.company().id()),
                 user.document(),
-                getRoleUser(user.id())
+                getRoleUser(user.id()).name()
         ));
 
         String refreshTokenValue = jwtService.generateRefreshToken();
@@ -114,7 +113,7 @@ public class AuthService {
                 UUID.fromString(user.id()),
                 UUID.fromString(user.company().id()),
                 user.document(),
-                getRoleUser(user.id())
+                getRoleUser(user.id()).name()
         ));
 
         refreshToken.setRevoked(true);
@@ -145,7 +144,7 @@ public class AuthService {
                 user.email(),
                 user.phone(),
                 user.company(),
-                getRoleUser(user.id()),
+                getRoleUser(user.id()).description(),
                 user.status()
         );
     }
@@ -242,8 +241,8 @@ public class AuthService {
 
     }
 
-    private String getRoleUser(String userId) {
+    private RoleResponse getRoleUser(String userId) {
         UserRole userRole = userRoleRepository.findUserRoleByUserAndActiveTrue(UUID.fromString(userId));
-        return roleRepository.findRoleById(userRole.getRole()).getDescription();
+        return roleService.findRoleById(userRole.getRole());
     }
 }
