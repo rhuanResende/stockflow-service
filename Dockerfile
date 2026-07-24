@@ -5,30 +5,29 @@ ARG GITHUB_TOKEN
 
 WORKDIR /app
 
-RUN mkdir -p /root/.m2
-
-RUN printf '<settings>\
-<servers>\
-<server>\
-<id>github-common</id>\
-<username>%s</username>\
-<password>%s</password>\
-</server>\
-<server>\
-<id>github-security</id>\
-<username>%s</username>\
-<password>%s</password>\
-</server>\
-</servers>\
-</settings>' \
-"$GITHUB_USERNAME" "$GITHUB_TOKEN" \
-"$GITHUB_USERNAME" "$GITHUB_TOKEN" \
-> /root/.m2/settings.xml
+RUN mkdir -p /root/.m2 && \
+    cat > /root/.m2/settings.xml <<EOF
+<settings>
+    <servers>
+        <server>
+            <id>github-common</id>
+            <username>${GITHUB_USERNAME}</username>
+            <password>${GITHUB_TOKEN}</password>
+        </server>
+        <server>
+            <id>github-security</id>
+            <username>${GITHUB_USERNAME}</username>
+            <password>${GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+</settings>
+EOF
 
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean package -U -DskipTests
+RUN mvn clean package -U -DskipTests && \
+    rm -f /root/.m2/settings.xml
 
 FROM eclipse-temurin:21-jre
 
@@ -36,4 +35,4 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
