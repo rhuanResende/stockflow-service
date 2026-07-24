@@ -48,8 +48,8 @@ databaseChangeLog:
         - addUniqueConstraint:
             schemaName: auth
             tableName: tb_user_role
-            columnNames: co_user, co_role
-            constraintName: uk_user_role
+            columnNames: co_user, st_active
+            constraintName: uk_user_active
 
         - createIndex:
             schemaName: auth

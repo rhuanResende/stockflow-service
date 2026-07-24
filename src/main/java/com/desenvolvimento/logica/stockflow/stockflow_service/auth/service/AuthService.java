@@ -1,7 +1,9 @@
 package com.desenvolvimento.logica.stockflow.stockflow_service.auth.service;
 
 import com.desenvolvimento.logica.stockflow.stockflow_common.dto.CompanyResponse;
+import com.desenvolvimento.logica.stockflow.stockflow_common.dto.UserDataResponse;
 import com.desenvolvimento.logica.stockflow.stockflow_common.dto.UserResponse;
+import com.desenvolvimento.logica.stockflow.stockflow_common.entity.BaseEntity;
 import com.desenvolvimento.logica.stockflow.stockflow_common.enums.MessageCode;
 import com.desenvolvimento.logica.stockflow.stockflow_common.exception.BusinessException;
 import com.desenvolvimento.logica.stockflow.stockflow_common.exception.InvalidTokenException;
@@ -14,6 +16,7 @@ import com.desenvolvimento.logica.stockflow.stockflow_service.auth.dto.*;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.entity.RefreshToken;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.entity.UserRole;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.mapper.RefreshTokenMapper;
+import com.desenvolvimento.logica.stockflow.stockflow_service.auth.mapper.RoleMapper;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.RefreshTokenRepository;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.RoleRepository;
 import com.desenvolvimento.logica.stockflow.stockflow_service.auth.repository.UserRoleRepository;
@@ -38,6 +41,7 @@ public class AuthService {
     private final RefreshTokenMapper refreshTokenMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RoleMapper roleMapper;
 
     public AuthService(
             UserRoleRepository userRoleRepository,
@@ -48,8 +52,8 @@ public class AuthService {
             MessageService messageService,
             RefreshTokenMapper refreshTokenMapper,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService
-    ) {
+            JwtService jwtService,
+            RoleMapper roleMapper) {
         this.userRoleRepository = userRoleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.roleRepository = roleRepository;
@@ -59,6 +63,7 @@ public class AuthService {
         this.refreshTokenMapper = refreshTokenMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.roleMapper = roleMapper;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -103,7 +108,7 @@ public class AuthService {
             throw new InvalidTokenException("Token Expirado");
         }
 
-        UserResponse user = userService.findUserById(refreshToken.getUser());
+        UserResponse user = userService.findUserByIdResponse(refreshToken.getUser());
 
         String token = jwtService.generateToken(new AuthenticatedUser(
                 UUID.fromString(user.id()),
@@ -140,7 +145,8 @@ public class AuthService {
                 user.email(),
                 user.phone(),
                 user.company(),
-                getRoleUser(user.id())
+                getRoleUser(user.id()),
+                user.status()
         );
     }
 
@@ -157,7 +163,7 @@ public class AuthService {
 
         UUID userId = TenantContextHolder.getUserId();
 
-        UserResponse userResponse = userService.findUserById(userId);
+        UserResponse userResponse = userService.findUserByIdResponse(userId);
 
         if (!passwordEncoder.matches(request.currentPassword(), userResponse.password())) {
             throw new UnauthorizedException(
@@ -172,10 +178,32 @@ public class AuthService {
 
     public void forgotPassword() {
 
-        UserResponse userResponse = userService.findUserById(TenantContextHolder.getTenantId());
+        UserResponse userResponse = userService.findUserByIdResponse(TenantContextHolder.getTenantId());
 
         //TODO enviar email
 
+    }
+
+    public List<RoleResponse> findRoles() {
+        String role = TenantContextHolder.getUserRole();
+        if (role.equalsIgnoreCase("MASTER")) {
+            return roleRepository
+                    .findAll()
+                    .stream()
+                    .filter(BaseEntity::getActive)
+                    .sorted((r1, r2) -> r1.getName().compareTo(r2.getName()))
+                    .map(roleMapper::toDTO)
+                    .toList();
+        } else {
+            return roleRepository
+                    .findAll()
+                    .stream()
+                    .filter(BaseEntity::getActive)
+                    .filter(r -> !r.getName().equalsIgnoreCase("MASTER"))
+                    .sorted((r1, r2) -> r1.getName().compareTo(r2.getName()))
+                    .map(roleMapper::toDTO)
+                    .toList();
+        }
     }
 
     private void validatePassword(String password, String confirmPassword) {
@@ -216,6 +244,6 @@ public class AuthService {
 
     private String getRoleUser(String userId) {
         UserRole userRole = userRoleRepository.findUserRoleByUserAndActiveTrue(UUID.fromString(userId));
-        return roleRepository.findRoleById(userRole.getRole()).getName();
+        return roleRepository.findRoleById(userRole.getRole()).getDescription();
     }
 }

@@ -10,8 +10,8 @@ public record CompanyRequest(
 
         @NotBlank(message = "Documento é obrigatório")
         @Pattern(
-                regexp = "^[A-Za-z0-9]{14}$",
-                message = "CNPJ deve conter 14 caracteres alfanuméricos"
+                regexp = "^([A-Za-z0-9]{11}|[A-Za-z0-9]{14})$",
+                message = "Documento deve conter 11 (CPF) ou 14 (CNPJ) caracteres alfanuméricos"
         )
         String document,
 

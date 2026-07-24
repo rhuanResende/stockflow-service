@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +67,17 @@ public class CompanyController {
                 true,
                 messageService.get(MessageCode.MESSAGE_SUCCESS_QUERY.getCode()),
                 companyService.getCompanies(name, document, status, pageable)
+        );
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<List<CompanyResponse>> search(
+            @RequestParam(name = "filter", required = false) final String filter
+    ) {
+        return new ApiResponse<>(
+                true,
+                messageService.get(MessageCode.MESSAGE_SUCCESS_QUERY.getCode()),
+                companyService.search(filter)
         );
     }
 

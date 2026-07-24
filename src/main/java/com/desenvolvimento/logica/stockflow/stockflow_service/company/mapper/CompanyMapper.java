@@ -17,7 +17,8 @@ public class CompanyMapper {
                 company.getName().toUpperCase(),
                 company.getDocument(),
                 company.getEmail(),
-                company.getPhone()
+                company.getPhone(),
+                company.getActive() ? "ATIVO" : "INATIVO"
         );
     }
 
