@@ -54,16 +54,17 @@ public class InitialDataLoader implements CommandLineRunner {
         if (roleRepository.count() > 0) {
             return roleRepository.findAll().getFirst();
         }
-        saveRole("MASTER");
-        saveRole("ADMIN");
-        saveRole("MANAGER");
-        saveRole("USER");
+        saveRole("MASTER", "MASTER");
+        saveRole("ADMIN", "ADMINISTRADOR");
+        saveRole("MANAGER", "GERENTE");
+        saveRole("USER", "USUÁRIO");
         return roleRepository.findRoleByName("MASTER");
     }
 
-    private void saveRole(String name) {
+    private void saveRole(String name, String description) {
         Role role = new Role();
         role.setName(name.toUpperCase());
+        role.setDescription(description);
         roleRepository.save(role);
     }
 

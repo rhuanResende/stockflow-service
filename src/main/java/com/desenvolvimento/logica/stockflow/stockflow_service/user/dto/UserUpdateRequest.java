@@ -1,4 +1,4 @@
-package com.desenvolvimento.logica.stockflow.stockflow_service.company.dto;
+package com.desenvolvimento.logica.stockflow.stockflow_service.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,29 +7,36 @@ import jakarta.validation.constraints.Pattern;
 
 import java.util.UUID;
 
-public record CompanyUpdateRequest(
+public record UserUpdateRequest(
         @NotNull(message = "ID é obrigatório")
         UUID id,
+
+        @NotNull(message = "Empresa é obrigatório")
+        UUID companyId,
+
+        @NotNull(message = "Perfil é obrigatório")
+        UUID profileId,
 
         @NotBlank(message = "Nome é obrigatorio")
         String name,
 
         @NotBlank(message = "Documento é obrigatório")
         @Pattern(
-                regexp = "^[A-Za-z0-9]{14}$",
-                message = "CNPJ deve conter 14 caracteres alfanuméricos"
+                regexp = "^[A-Za-z0-9]{11}$",
+                message = "Documento deve conter 11 caracteres"
         )
         String document,
 
         @NotBlank(message = "Email é obrigatório")
-        @Email()
+        @Email
         String email,
 
         @NotBlank(message = "Telefone é obrigatório")
         @Pattern(
-                regexp = "^\\d{10,11}$",
-                message = "Telefone deve conter 10 ou 11 dígitos"
+                regexp = "^\\d{11}$",
+                message = "Telefone deve conter 11 dígitos"
         )
         String phone
+
 ) {
 }
