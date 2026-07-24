@@ -106,7 +106,7 @@ public class UserService {
 
         UUID tenantId = null;
 
-        if (role.equalsIgnoreCase("MASTER")) {
+        if (!role.equalsIgnoreCase("MASTER")) {
             tenantId = UUID.fromString(getCompany(companyId).id());
         }
 
