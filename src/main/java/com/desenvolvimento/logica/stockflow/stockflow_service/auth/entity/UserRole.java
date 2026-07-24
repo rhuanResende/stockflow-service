@@ -9,8 +9,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "tb_user_role", schema = "auth")
 public class UserRole extends BaseEntity {
@@ -22,3 +22,4 @@ public class UserRole extends BaseEntity {
     private UUID role;
 
 }
+

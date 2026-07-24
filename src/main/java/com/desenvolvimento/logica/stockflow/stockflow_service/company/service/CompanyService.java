@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,6 +58,16 @@ public class CompanyService {
                 pageable
         );
         return page.map(companyMapper::toDTO);
+    }
+
+    public List<CompanyResponse> search(final String filter) {
+        if (filter == null || filter.isEmpty()) {
+            return findAll();
+        }
+        return companyRepository.queryCompanyByFilterAndDeletedFalse(filter)
+                .stream()
+                .map(companyMapper::toDTO)
+                .toList();
     }
 
     public CompanyResponse update(CompanyUpdateRequest request) {
@@ -106,5 +117,14 @@ public class CompanyService {
         }
 
         return company.get();
+    }
+
+    private List<CompanyResponse> findAll() {
+        return companyRepository
+                .findAll()
+                .stream()
+                .sorted((c1, c2) -> c1.getName().toUpperCase().compareTo(c2.getName().toUpperCase()))
+                .map(companyMapper::toDTO)
+                .toList();
     }
 }

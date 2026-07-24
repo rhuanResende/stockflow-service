@@ -34,9 +34,6 @@ public class User extends BaseEntity {
     @Column(name = "ds_password", nullable = false)
     private String password;
 
-    @Column(name = "st_active", nullable = false)
-    private boolean active;
-
     @Column(name = "st_first_access", nullable = false)
     private Boolean firstAccess;
 
